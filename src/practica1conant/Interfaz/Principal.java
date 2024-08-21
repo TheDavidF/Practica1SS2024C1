@@ -62,11 +62,13 @@ public class Principal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     
     private void dibujar (ArrayList<Animable> figuras){
+            scroll.removeAll();
             dibujo = new Dibujo(compilador.getFiguras());
             dibujo.setSize(scroll.getSize());
             dibujo.setVisible(true);
             this.scroll.add(dibujo);
             dibujo.repaint();
+            scroll.repaint();
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -84,10 +86,11 @@ public class Principal extends javax.swing.JFrame {
         carga = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
-        errores = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        erroresR = new javax.swing.JMenuItem();
+        objetosR = new javax.swing.JMenuItem();
+        coloresR = new javax.swing.JMenuItem();
+        operacionesR = new javax.swing.JMenuItem();
+        exportarR = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -177,26 +180,49 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu1.setText("Reportes");
 
-        errores.setText("Reporte de Errores");
-        errores.addActionListener(new java.awt.event.ActionListener() {
+        erroresR.setText("Reporte de Errores");
+        erroresR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                erroresActionPerformed(evt);
+                erroresRActionPerformed(evt);
             }
         });
-        jMenu1.add(errores);
+        jMenu1.add(erroresR);
 
-        jMenuItem4.setText("jMenuItem4");
-        jMenu1.add(jMenuItem4);
+        objetosR.setText("Reporte de Objetos");
+        objetosR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                objetosRActionPerformed(evt);
+            }
+        });
+        jMenu1.add(objetosR);
 
-        jMenuItem5.setText("jMenuItem5");
-        jMenu1.add(jMenuItem5);
+        coloresR.setText("Reporte Colores");
+        coloresR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coloresRActionPerformed(evt);
+            }
+        });
+        jMenu1.add(coloresR);
+
+        operacionesR.setText("Reporte de operaciones");
+        operacionesR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                operacionesRActionPerformed(evt);
+            }
+        });
+        jMenu1.add(operacionesR);
 
         carga.add(jMenu1);
 
-        jMenuBar1.add(carga);
+        exportarR.setText("Exportar");
+        exportarR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportarRActionPerformed(evt);
+            }
+        });
+        carga.add(exportarR);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(carga);
 
         setJMenuBar(jMenuBar1);
 
@@ -213,10 +239,19 @@ public class Principal extends javax.swing.JFrame {
         err.clear();
         err = compilador.soloLex(analizable);
         if(err.isEmpty()){
+            coloresR.setEnabled(true);
+            operacionesR.setEnabled(true);
+            objetosR.setEnabled(true);
+            exportarR.setEnabled(true);
             dibujar(compilador.getFiguras());
             textArea2.setText("---- No se existen errores de analisis----");
             animar.setEnabled(true);
         } else {
+            coloresR.setEnabled(false);
+            operacionesR.setEnabled(false);
+            objetosR.setEnabled(false);
+            exportarR.setEnabled(false);
+            scroll.removeAll();
             String erroresL = "";
             for (Error error : err) {
                 erroresL += error +"\n";
@@ -237,9 +272,40 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void erroresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_erroresActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_erroresActionPerformed
+    private void erroresRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_erroresRActionPerformed
+        this.setVisible(false);
+        Errores errr = new Errores(err, this);
+        errr.setVisible(true);
+    }//GEN-LAST:event_erroresRActionPerformed
+
+    private void objetosRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objetosRActionPerformed
+        this.setVisible(false);
+        ObjetosUs objetos = new ObjetosUs(compilador.getFiguras(), this);
+        objetos.setVisible(true);
+    }//GEN-LAST:event_objetosRActionPerformed
+
+    private void coloresRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coloresRActionPerformed
+       Reporte_colores colo = new Reporte_colores(compilador.getTokens(), this);
+       this.setVisible(false);
+       colo.setVisible(true);
+    }//GEN-LAST:event_coloresRActionPerformed
+
+    private void operacionesRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_operacionesRActionPerformed
+        this.setVisible(false);
+        ReporteOperaciones op = new ReporteOperaciones(compilador.getTokens(), this);
+        op.setVisible(true);
+        
+    }//GEN-LAST:event_operacionesRActionPerformed
+
+    private void exportarRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportarRActionPerformed
+        Exportar exportar = new Exportar();
+        System.out.println("exportando");
+        if(dibujo != null){
+            exportar.exportarCanvasConJFileChooser(dibujo);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al exportar archivo");
+        }
+    }//GEN-LAST:event_exportarRActionPerformed
 
     private String leerArchivo() {
         String aux = "";
@@ -312,17 +378,18 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton animar;
     private javax.swing.JMenu carga;
+    private javax.swing.JMenuItem coloresR;
     private javax.swing.JButton compilar;
-    private javax.swing.JMenuItem errores;
+    private javax.swing.JMenuItem erroresR;
+    private javax.swing.JMenuItem exportarR;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JMenuItem objetosR;
+    private javax.swing.JMenuItem operacionesR;
     private javax.swing.JPanel scroll;
     private javax.swing.JTextArea textArea;
     private javax.swing.JTextArea textArea2;
